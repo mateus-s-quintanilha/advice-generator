@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <!-- <link rel="shortcut icon" href="./images/favicon-32x32.png" type="image/x-icon"> -->
+  <link rel="shortcut icon" href="./images/favicon-32x32.png" type="image/x-icon">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap" rel="stylesheet">
+
+  <title>Frontend Mentor | Advice generator app</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+  
+  <div class="container">
+
+    <header>
+      <div>
+        <span>A D V I C E</span> <span># <span id="adviceId">-</span></span>
+      </div>
+    </header>
+
+    <section>
+      <img id="start-hidden" class="loadingGif" src="./images/loading.gif" alt="">
+      <div class="defaultMsg">
+        Click on the button bellow and receive one advice!
+      </div>
+      <div class="message"></div>
+    </section>
+
+    <img id="divisorImg" src="./images/pattern-divider-desktop.svg" alt="Divider">
+
+  </div>
+  <div onclick="generateAdvice()" class="mainButton">
+
+    <button id="changeMsgBtn">
+      <img src="./images/icon-dice.svg" alt="">
+    </button>
+
+  </div>
+
+</body>
+
+
+<script>
+  const corpo = document.getElementById('corpo')
+  const urlServer = 'http://localhost:3001/'
+  const defaultMsg = document.getElementsByClassName('defaultMsg')[0]
+  const loadingGif = document.getElementsByClassName('loadingGif')[0]
+  const message = document.getElementsByClassName('message')[0]
+  const adviceId = document.getElementById('adviceId')
+
+  async function getData() {
+    const data = await fetch(urlServer).catch((err) => console.log('Error to connect to the database:', err))
+      .then(res => res.json())
+
+    const advice = data.slip['advice']
+    const id = data.slip['id']
+
+    message.innerHTML = `"${advice}"`
+    adviceId.innerHTML = id
+  }
+
+  function generateAdvice() {
+    if(!message.innerHTML == '') {
+      message.setAttribute("id", "start-hidden")
+    }
+
+    loadingGif.removeAttribute('id')   
+    defaultMsg.setAttribute("id", "start-hidden") 
+
+    getData()
+     .then(() => {
+       if(message.hasAttribute("id")) {
+         message.removeAttribute("id")
+       }
+       loadingGif.setAttribute("id", "start-hidden")
+     }).catch(err => console.log(err))
+
+  }
+  
+</script> 
+
+</html>
